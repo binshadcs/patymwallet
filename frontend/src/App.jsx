@@ -10,6 +10,7 @@ function App() {
     <>
        <BrowserRouter>
         <Routes>
+        <Route path="/" element={<ModalTest />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/dashboard" element={<Dashboard />} />
@@ -48,3 +49,5 @@ function ModalTest() {
 }
 
 export default App
+
+// https://paymentwallet.onrender.com/api/v1/
