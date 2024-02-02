@@ -166,25 +166,34 @@ router.get("/bulk",userAuth, async(req, res) => {
     }
 })
 
-router.post("/me", (req, res) => {
-    const { token } = req.body;
-    const word = token.split(" ");
+router.post("/me", userAuth, async(req, res) => {
+    const userId = req.userId;
     try {
-        const user = jwt.verify(word[1], JWT_SECRET)
-        if (user) {
+        const user = await User.findOne({_id : userId});
+        try {
+            const acc = await Accounts.findOne({userId})
             res.status(200).json({
-                message : "User verified successfully"
+                user :{
+                    username : user.username,
+                    firstName : user.firstname,
+                    lastName : user.lastname
+                },
+                balance : acc.balance
             })
-        } else {
-          res.status(403).json({
-            message: "You don't have access"
-          })
+        } catch (error) {
+            res.status(404).json({
+                message : "balance fetchin failed",
+                info : error.message
+            })
         }
-      } catch (error) {
-        res.status(403).json({
-          message: error.message
+        
+    } catch (error) {
+        res.status(404).json({
+            message : "user not found",
+            info : error.message
         })
-      }
+    }
+
 })
 
 module.exports = router;
