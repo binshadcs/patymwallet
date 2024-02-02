@@ -166,7 +166,7 @@ router.get("/bulk",userAuth, async(req, res) => {
     }
 })
 
-router.post("/me", userAuth, async(req, res) => {
+router.get("/me", userAuth, async(req, res) => {
     const userId = req.userId;
     try {
         const user = await User.findOne({_id : userId});
