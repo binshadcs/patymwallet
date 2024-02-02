@@ -166,4 +166,25 @@ router.get("/bulk",userAuth, async(req, res) => {
     }
 })
 
+router.post("/me", (req, res) => {
+    const { token } = req.body;
+    const word = token.split(" ");
+    try {
+        const user = jwt.verify(word[1], JWT_SECRET)
+        if (user) {
+            res.status(200).json({
+                message : "User verified successfully"
+            })
+        } else {
+          res.status(403).json({
+            message: "You don't have access"
+          })
+        }
+      } catch (error) {
+        res.status(403).json({
+          message: error.message
+        })
+      }
+})
+
 module.exports = router;
