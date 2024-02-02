@@ -168,30 +168,36 @@ router.get("/bulk",userAuth, async(req, res) => {
 
 router.get("/me", userAuth, async(req, res) => {
     const userId = req.userId;
-    try {
-        const user = await User.findOne({_id : userId});
+    if(!userId) {
+        res.status(403).json({
+            message : "Not logged in"
+        })
+    }else {
         try {
-            const acc = await Accounts.findOne({userId})
-            res.status(200).json({
-                user :{
-                    username : user.username,
-                    firstName : user.firstname,
-                    lastName : user.lastname
-                },
-                balance : acc.balance
-            })
+            const user = await User.findOne({_id : userId});
+            try {
+                const acc = await Accounts.findOne({userId})
+                res.status(200).json({
+                    user :{
+                        username : user.username,
+                        firstName : user.firstname,
+                        lastName : user.lastname
+                    },
+                    balance : acc.balance
+                })
+            } catch (error) {
+                res.status(404).json({
+                    message : "balance fetchin failed",
+                    info : error.message
+                })
+            }
+            
         } catch (error) {
             res.status(404).json({
-                message : "balance fetchin failed",
+                message : "user not found",
                 info : error.message
             })
         }
-        
-    } catch (error) {
-        res.status(404).json({
-            message : "user not found",
-            info : error.message
-        })
     }
 
 })
